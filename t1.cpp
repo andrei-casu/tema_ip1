@@ -47,7 +47,27 @@ unsigned int fibonnaci(int index){
   return last1;
 }
 
+bool isPerfectNumber(unsigned int number){
+  int sum = 1, d;
+  for (d = 2; d * d < number; ++d)
+    if (number % d == 0)
+      sum += d + number/d;
+
+  if (number == d * d)
+    sum += d;
+
+  return (sum == number);
+}
+
 unsigned long perfectNumbers(unsigned int number){
+  int i, sum = 0;
+  for (i = number - 1; i > 0; --i)
+    if (isPerfectNumber(i)){
+      if (sum)
+        return sum + i;
+      sum += i;
+    }
+
   return 0;
 }
 
@@ -75,4 +95,59 @@ unsigned short primeDivisors(unsigned int left, unsigned int right){
       ++nbOfMax;
   }
   return nbOfMax;
+}
+
+bool isPrime(unsigned int number){
+  int d;
+  for (d = 2; d * d <= number; ++d)
+    if (number % d == 0)
+      return false;
+  return true;
+}
+
+matrix primeTwins(unsigned int count, unsigned int lowerBound){
+  matrix result;
+  result.columns = 2;
+  int nb[2];
+  bool prime[2];
+
+  if (lowerBound % 2 == 0)
+    nb[0] = lowerBound + 1;
+  else nb[0] = lowerBound + 2;
+
+  prime[0] = isPrime(nb[0]);
+
+  while (result.lines < count){
+    nb[1] = nb[0] + 2;
+    prime[1] = isPrime(nb[1]);
+
+    if (prime[0] && prime[1]){
+      result.values[result.lines][0] = nb[0];
+      result.values[result.lines][1] = nb[1];
+      ++result.lines;
+    }
+
+    nb[0] = nb[1];
+    prime[0] = prime[1];
+  }
+
+  return result;
+}
+
+bool areOrderedFibonnaci(vector vec){
+  if (vec.length == 0) return true;
+  if (vec.length == 1 && vec.values[0] == 0)
+    return true;
+  if (vec.length == 2 && vec.values[0] == 0 && vec.values[1] == 1)
+    return true;
+
+  if (!(vec.values[0] == 0 && vec.values[1] == 1))
+    return false;
+
+  int i;
+  for (i = 2; i < vec.length; ++i)
+    if (vec.values[i] != vec.values[i-1] + vec.values[i-2])
+      return false;
+
+  return true;
 }
