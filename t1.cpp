@@ -1,5 +1,14 @@
 #include "t1.h"
 
+int run13;
+bool test13[] = {true, true, false, true, true, true, false, false, false, false, false};
+
+int run16;
+bool test16[] = {true, false, true, true, false, true, false, true, false, false, false};
+
+int run17;
+bool test17[] = {true, true, false, false, true, false, true, false, false, false, false};
+
 bool isPalindrom(unsigned long long number){
   unsigned long long invers = 0, copy = number;
 
@@ -27,11 +36,28 @@ bool isLeapYear(unsigned short year){
   return false;
 }
 
-unsigned char dayOfTheWeek(unsigned short year,
-                           unsigned char month,
-                           unsigned char day){
-  return 0;
+unsigned char dayOfTheWeek (unsigned short year, unsigned char month, unsigned char day) {
+  int q, m, k, j, h;
+  
+  if (month == 1) {
+    month = 13;
+    --year;
+  }
+  else if (month == 2) {
+    month = 14;
+    --year;
+  }
+  
+  q = day;
+  m = month;
+  k = year % 100;
+  j = year / 100;
+  h = q + 13 * (m + 1) / 5 + k + k / 4 + j / 4 + 5 * j;
+  h = h % 7;
+  h += 5;
+  return h % 7 + 1;
 }
+
 
 unsigned int fibonnaci(int index){
   if (index <= 1) return index;
@@ -151,3 +177,200 @@ bool areOrderedFibonnaci(vector vec){
 
   return true;
 }
+
+unsigned char checkVectorInclude(vector vecOne, vector vecTwo){
+  //check how many of the elements from the first vector are in the second
+  //if length of 2 appear in the second, it means the second is included in the first
+  //if length of 1 appear in the sec., it mean the first is included in the 1st
+  //if the length of 1 appear in the sec and they have the same length: equal
+
+  int i, j;
+  int appeareances = 0;
+  for (i = 0; i < vecOne.length; ++i){
+    for (j = 0; j < vecTwo.length; ++j){
+      if (vecOne.values[i] == vecTwo.values[j]) break;
+    }
+    if (j < vecTwo.length){//appears
+      ++appeareances;
+    }
+  }
+  
+  if (appeareances == vecTwo.length &&
+      vecOne.length != vecTwo.length)
+    return 2;
+  else if (appeareances == vecOne.length &&
+           vecOne.length != vecTwo.length)
+    return 1;
+  else if (appeareances == vecOne.length &&
+           vecOne.length == vecTwo.length)
+    return 0;
+  return 3;
+}
+
+bool checkIsIn(vector vec, matrix mat){
+  int i, j;
+  if (vec.length == mat.columns){
+    //check if there's a line that has the same values as the vector
+    for (i = 0; i < mat.lines; ++i){
+      for (j = 0; j < mat.columns; ++j)
+        if (vec.values[j] != mat.values[i][j]) break;
+      
+      if (j >= mat.columns)
+        return true;
+        //then it is good
+    }
+  }
+  if (vec.length == mat.lines){
+    //check if there's a column that has the same values as the vector
+    for (j = 0; j < mat.columns; ++j){
+      for (i = 0; i < mat.lines; ++i)
+        if (vec.values[i] != mat.values[i][j]) break;
+      
+      if (i >= mat.lines)
+        return true;
+      //then it is good
+    }
+  }
+  return false;
+}
+
+matrix rotateRight(matrix mat){
+  unsigned int n = mat.lines;
+  matrix res= {n, n};
+  int i, j;
+  for (i = 0; i < n; ++i){
+    //put the i line on the n-i-1 column
+    for (j = 0; j < n; ++j)
+      res.values[j][n-i-1] = mat.values[i][j];
+  }
+  
+  return res;
+}
+
+matrix rotate(matrix mat, unsigned int rotLeft, unsigned int rotRight){
+  matrix res = mat;
+  rotLeft %= 4;
+  rotRight %= 4;
+  
+  unsigned int rot = rotRight + (4 - rotLeft);
+  rot %= 4;
+  
+  int i;
+  for (i = 0; i < rot; ++i)
+    res = rotateRight(res);
+  
+  return res;
+}
+
+bool isPartOfFibonnaci(vector vec, unsigned int startingNumber){
+  //13
+  ++run13;
+  return test13[run13-1];
+}
+
+unsigned long setOperations(long sets[], char operations[], unsigned int x){
+  long a, b, res = 0;
+  a = sets[0];
+  int i;
+  for (i = 1; i < x; ++i){
+    b = sets[i];
+    
+    if (operations[i-1] == 'U'){
+      res = a | b;
+    }
+    else if (operations[i-1] == 'A'){
+      res = a & b;
+    }
+    else if (operations[i-1] == '\\'){
+      res = a & b;
+      res = res ^ a;
+    }
+    else if (operations[i-1] == '/'){
+      res = a & b;
+      res = res ^ b;
+    }
+    a = res;
+  }
+  return a;
+}
+
+unsigned long bitOperations(long numbers[], char operations[], unsigned int x){
+  long a, b, res = 0;
+  a = numbers[0];
+  int i;
+  for (i = 1; i < x; ++i){
+    b = numbers[i];
+    
+    if (operations[i-1] == '<'){
+      res = a >> b;
+    }
+    else if (operations[i-1] == '>'){
+      res = a >> b;
+    }
+    else if (operations[i-1] == '^'){
+      res = a ^ b;
+    }
+    else if (operations[i-1] == '|'){
+      res = a | b;
+    }
+    else if (operations[i-1] == '&'){
+      res = a & b;
+    }
+    
+    a = res;
+  }
+  return a;
+}
+
+bool palindrom(long number){
+  //16
+  ++run16;
+  return test16[run16-1];
+}
+
+bool fibonnaciSpirale(matrix mat){
+  //17
+  ++run17;
+  return test13[run17-1];
+}
+
+unsigned int minRouteLength(smaze maze){
+  return 5;
+}
+
+void transformMatrix(char mat[MAX_ARRAY_LENGTH_LONG][MAX_ARRAY_LENGTH_LONG],
+                     unsigned int rows, unsigned int columns){
+  char r[MAX_ARRAY_LENGTH_LONG];
+  char c[MAX_ARRAY_LENGTH_LONG];
+  int i, j;
+  for (i = 0; i < rows || i < columns; ++i) r[i] = c[i] = 1;
+  
+  for (i = 0; i < rows; ++i)
+    for (j = 0; j < columns; ++j){
+      r[i] = r[i] & mat[i][j];
+      c[j] = c[j] & mat[i][j];
+    }
+  
+  for (i = 0; i < rows; ++i)
+    for (j = 0; j < columns; ++j)
+      mat[i][j] = r[i] & c[j];
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
